@@ -1,5 +1,7 @@
 # States
 
+[![Build Status](https://secure.travis-ci.org/joshwnj/States.png)](http://travis-ci.org/joshwnj/States)
+
 Instead of this:
 
     if (SomeObject.is_ready) {
