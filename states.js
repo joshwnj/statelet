@@ -13,7 +13,7 @@ State.prototype = {
     get: function () {
         return this._value;
     },
-    
+
     set: function (value) {
         if (value !== this._value) {
             this._notifyTransitions(this._value, value);
@@ -25,6 +25,7 @@ State.prototype = {
     /**
      * Watch for any change in value
      * @param {Function} callback
+     * @todo Should we wrap the callback in a setTimeout() to force it to always be asynchronous? Otherwise, we do a setTimeout() some of the time?
      */
     watch: function (callback) {
         // if there is a value, run the callback immediately
@@ -40,6 +41,22 @@ State.prototype = {
         if(i === -1){
             this._watchers.push(callback);
         }
+    },
+
+    /**
+     * Execute the callback when the the value is set
+     * @todo {Function} callback
+     */
+    once: function (callback) {
+        var self = this;
+        var once_callback;
+
+        once_callback = function(){
+            self.unwatch(once_callback);
+            callback.call(null, arguments);
+        };
+
+        this.watch(once_callback);
     },
 
     /**
@@ -62,7 +79,8 @@ State.prototype = {
      * Implementation of array.indexOf which sadly is not available in IE<=8
      */
     _indexOf: function(array, item){
-        for( var i = 0, len = array.length; i < len; i += 1 ){
+        var i, len;
+        for( i = 0, len = array.length; i < len; i += 1 ){
             if( array[i] === item ){
                 return i;
             }
@@ -119,7 +137,7 @@ State.prototype = {
         this._transition_watchers.forEach(function (info) {
             var match_from = (info.from === '*' || info.from === from);
             var match_to = (info.to === '*' || info.to === to);
-            
+
             if (match_from && match_to) {
                 setTimeout(function () { info.callback(from, to); }, 0);
             }
