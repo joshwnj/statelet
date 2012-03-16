@@ -1,0 +1,13 @@
+{
+  "name": "states",
+  "version": "0.2.0",
+  "author": "Josh Johnston (@joshwnj)",
+  "description": "State objects",
+  "contributors": [
+    "Weston Ruter (@wruter)"
+  ],
+  "repository": "git://github.com/joshwnj/States.git",
+  "scripts": {
+    "test": "node tests"
+  }
+}
