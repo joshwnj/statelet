@@ -45,7 +45,7 @@ State.prototype = {
 
     /**
      * Execute the callback when the the value is set
-     * @todo {Function} callback
+     * @param {Function} callback
      */
     once: function (callback) {
         var self = this;
