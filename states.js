@@ -15,11 +15,12 @@ State.prototype = {
     },
 
     set: function (value) {
-        if (value !== this._value) {
-            this._notifyTransitions(this._value, value);
-            this._value = value;
-            this._notify();
-        }
+        // no change: ignore
+        if (value === this._value) { return; }
+
+        this._notifyTransitions(this._value, value);
+        this._value = value;
+        this._notify();
     },
 
     /**
@@ -78,27 +79,38 @@ State.prototype = {
     /**
      * Implementation of array.indexOf which sadly is not available in IE<=8
      */
-    _indexOf: function(array, item){
-        var i, len;
-        for( i = 0, len = array.length; i < len; i += 1 ){
-            if( array[i] === item ){
-                return i;
+    _indexOf: (function () {
+        // use native indexOf if provided
+        return [].indexOf
+            ? function (array, item) {
+                return array.indexOf(item);
             }
-        }
-        return -1;
-    },
+            : function(array, item){
+                var i, len;
+                for( i = 0, len = array.length; i < len; i += 1 ){
+                    if( array[i] === item ){
+                        return i;
+                    }
+                }
+                return -1;
+            };
+    }()),
 
     /**
-     * Watch for a certain value
+     * Watch for a certain value.
+     * Returns the watch-callback so you can unwatch at a later stage.
      * @param mixed
      * @param function
+     * @return function
      */
     when: function (value, callback) {
-        this.watch(function (v) {
+        var watcher = function (v) {
             if (v === value) {
                 callback();
             }
-        });
+        };
+        this.watch(watcher);
+        return watcher;
     },
 
     /**
