@@ -19,6 +19,43 @@ test('Only notify if state changes', function (t) {
 });
 
 
+test('Watchers all fire asynchronously', function (t) {
+    var s = new State();
+
+    // Testing adding watcher when State is undefined
+    var watcher1_times = 0;
+    var watcher1 = function () {
+        watcher1_times += 1;
+        console_info('watcher1_times += 1, ==> ' + watcher1_times);
+    };
+    s.watch(watcher1);
+    s.set('1st');
+    t.ok(watcher1_times === 0, 'First watcher should not be called yet (1st)');
+    s.set('2nd');
+    t.ok(watcher1_times === 0, 'First watcher should not be called yet (2nd)');
+    s.set('3rd');
+    process.nextTick(function () {
+        t.ok(watcher1_times === 3, 'First watcher should be called 3 times upon nextTick.');
+    });
+
+    // Testing adding watcher when State is not undefined
+    var watcher2_times = 0;
+    var watcher2 = function (s_val) {
+        watcher2_times += 1;
+    };
+    s.watch(watcher2);
+    s.set('4th');
+    t.ok(watcher2_times === 0, 'Second watcher should still not have been called');
+
+    // @todo This test currently fails with the watcher2 being unexpected called twice
+    process.nextTick(function () {
+        t.ok(watcher2_times === 1, 'Second watcher should be called 2 times upon nextTick');
+    });
+
+    t.end();
+});
+
+
 test('Ensure once only invokes watcher for single change', function (t) {
     var s = new State();
 
