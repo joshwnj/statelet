@@ -22,6 +22,13 @@
             return this._value;
         },
 
+        valueOf: function () {
+            return this.get();
+        },
+        toString: function(){
+            return String(this.get());
+        },
+
         set: function (value) {
             // no change: ignore
             if (value === this._value) { return; }
