@@ -61,8 +61,10 @@
             var once_callback;
 
             once_callback = function(){
-                self.unwatch(once_callback);
-                callback.call(null, arguments);
+                var has_watcher = self.unwatch(once_callback);
+                if( has_watcher ){
+                    callback.call(null, arguments);
+                }
             };
 
             this.watch(once_callback);
