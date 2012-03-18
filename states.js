@@ -22,6 +22,13 @@
             return this._value;
         },
 
+        valueOf: function () {
+            return this.get();
+        },
+        toString: function(){
+            return String(this.get());
+        },
+
         set: function (value) {
             // no change: ignore
             if (value === this._value) { return; }
@@ -61,8 +68,10 @@
             var once_callback;
 
             once_callback = function(){
-                self.unwatch(once_callback);
-                callback.call(null, arguments);
+                var has_watcher = self.unwatch(once_callback);
+                if( has_watcher ){
+                    callback.call(null, arguments);
+                }
             };
 
             this.watch(once_callback);
