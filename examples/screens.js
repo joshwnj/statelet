@@ -1,7 +1,9 @@
+/*global State, _, $ */
+
 function Screen (name, elm) {
     this.name = name;
     this._elm = elm;
-    this.state = new State;
+    this.state = new State();
 }
 
 Screen.prototype = {
@@ -14,12 +16,6 @@ Screen.prototype = {
 
 var screens = {};
 
-// create screens
-['a', 'b'].forEach(function (name) {
-    var elm = $('#screens .screen-' + name);
-    screens[name] = createScreen(name, elm);
-});
-
 function createScreen (name, elm) {
     var screen = new Screen(name, elm);
 
@@ -31,22 +27,6 @@ function createScreen (name, elm) {
 
     return screen;
 }
-
-// ----
-// store the current screen id as a state, so we can transition between them
-
-var screen_id = new State;
-screen_id.onTransition('*', '*', function (from, to) {
-    // first screen: show immediately
-    if (from === undefined) {
-        screens[to].getElm().addClass('active');
-        return;
-    }
-
-    // crossfade
-    fadeOut(from);
-    fadeIn(to);
-});
 
 function fadeIn (name) {
     var elm = screens[name].getElm();
@@ -65,6 +45,30 @@ function fadeOut (name) {
         }
     });
 }
+
+// ----
+
+// create screens
+['a', 'b'].forEach(function (name) {
+    var elm = $('#screens .screen-' + name);
+    screens[name] = createScreen(name, elm);
+});
+
+// ----
+// store the current screen id as a state, so we can transition between them
+
+var screen_id = new State();
+screen_id.onTransition('*', '*', function (from, to) {
+    // first screen: show immediately
+    if (from === undefined) {
+        screens[to].getElm().addClass('active');
+        return;
+    }
+
+    // crossfade
+    fadeOut(from);
+    fadeIn(to);
+});
 
 // ----
 // create some buttons to switch between screens
@@ -92,9 +96,9 @@ buttons.find('button:eq(0)').click();
 
 (function (screen) {
     var state = screen.state;
-
-    function load () {
-        load = function () {};
+    var watcher = screen_id.when(screen.name, function () {
+        // remove the watcher
+        screen_id.unwatch(watcher);
 
         state.set('loading');
         
@@ -102,7 +106,5 @@ buttons.find('button:eq(0)').click();
         setTimeout(function () {
             state.set('ready');
         }, 3000);
-    }
-
-    screen_id.when(screen.name, load);
+    });
 }(screens.b));
