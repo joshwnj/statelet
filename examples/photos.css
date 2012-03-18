@@ -28,3 +28,6 @@ body {
     color: #FFF;
     opacity: 0.5;
 }
+
+#photos img { z-index: 100; }
+#photos .loading { z-index: 200; }
