@@ -23,33 +23,39 @@ test('Watchers all fire asynchronously', function (t) {
     var s = new State();
 
     // Testing adding watcher when State is undefined
-    var watcher1_times = 0;
-    var watcher1 = function () {
-        watcher1_times += 1;
-        console_info('watcher1_times += 1, ==> ' + watcher1_times);
+    var watcher1_values = [];
+    var watcher1 = function (value) {
+        watcher1_values.push(value);
     };
     s.watch(watcher1);
     s.set('1st');
-    t.ok(watcher1_times === 0, 'First watcher should not be called yet (1st)');
+    t.equal(watcher1_values.length, 0, 'First watcher should not be called yet (1st)');
     s.set('2nd');
-    t.ok(watcher1_times === 0, 'First watcher should not be called yet (2nd)');
+    t.equal(watcher1_values.length, 0, 'First watcher should not be called yet (2nd)');
     s.set('3rd');
     process.nextTick(function () {
-        t.ok(watcher1_times === 3, 'First watcher should be called 3 times upon nextTick.');
+        t.deepEqual(
+            watcher1_values,
+            ['1st', '2nd', '3rd'],
+            'First watcher should be called 3 times upon nextTick.');
     });
 
     // Testing adding watcher when State is not undefined
-    var watcher2_times = 0;
-    var watcher2 = function (s_val) {
-        watcher2_times += 1;
+    var watcher2_values = [];
+    var watcher2 = function (value) {
+        watcher2_values.push(value);
     };
-    s.watch(watcher2);
+    // this will cause our watch() callback to be run,
+    // as the state already has a value
+    s.watch(watcher2);  
     s.set('4th');
-    t.ok(watcher2_times === 0, 'Second watcher should still not have been called');
+    t.equal(watcher2_values.length, 0, 'Second watcher should still not have been called');
 
-    // @todo This test currently fails with the watcher2 being unexpected called twice
     process.nextTick(function () {
-        t.ok(watcher2_times === 1, 'Second watcher should be called 2 times upon nextTick');
+        t.deepEqual(
+            watcher2_values,
+            ['3rd', '4th'],
+            'Second watcher should be called 2 times upon nextTick');
     });
 
     t.end();
