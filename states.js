@@ -25,6 +25,7 @@
         valueOf: function () {
             return this.get();
         },
+
         toString: function(){
             return String(this.get());
         },
@@ -41,6 +42,7 @@
         /**
          * Watch for any change in value
          * @param {Function} callback
+         * @return {Function} callback
          * @todo Should we wrap the callback in a setTimeout() to force it to always be asynchronous? Otherwise, we do a setTimeout() some of the time?
          */
         watch: function (callback) {
@@ -57,11 +59,13 @@
             if(i === -1){
                 this._watchers.push(callback);
             }
+            return callback;
         },
 
         /**
          * Execute the callback when the the value is set
          * @param {Function} callback
+         * @return {Function} callback
          */
         once: function (callback) {
             var self = this;
@@ -75,6 +79,7 @@
             };
 
             this.watch(once_callback);
+            return once_callback;
         },
 
         /**
@@ -84,13 +89,11 @@
          */
         unwatch: function (callback) {
             var i = this._indexOf(this._watchers, callback);
-            if(i !== -1){
+            var found = (i !== -1);
+            if (found) {
                 this._watchers.splice(i, 1);
-                return true;
             }
-            else {
-                return false;
-            }
+            return found;
         },
 
         /**
