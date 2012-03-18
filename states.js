@@ -11,6 +11,26 @@
             };
     }());
 
+    /**
+     * Implementation of array.indexOf which sadly is not available in IE<=8
+     */
+    var indexOf = (function () {
+        // use native indexOf if provided
+        return [].indexOf
+            ? function (array, item) {
+                return array.indexOf(item);
+            }
+            : function(array, item){
+                var i, len;
+                for( i = 0, len = array.length; i < len; i += 1 ){
+                    if( array[i] === item ){
+                        return i;
+                    }
+                }
+                return -1;
+            };
+    }());
+
     function State (value) {
         this._watchers = [];
         this._transition_watchers = [];
@@ -55,7 +75,7 @@
             }
 
             // register the callback if it hasn't already been added
-            var i = this._indexOf(this._watchers, callback);
+            var i = indexOf(this._watchers, callback);
             if(i === -1){
                 this._watchers.push(callback);
             }
@@ -88,33 +108,13 @@
          * @returns {Boolean} if the callback was removed
          */
         unwatch: function (callback) {
-            var i = this._indexOf(this._watchers, callback);
+            var i = indexOf(this._watchers, callback);
             var found = (i !== -1);
             if (found) {
                 this._watchers.splice(i, 1);
             }
             return found;
         },
-
-        /**
-         * Implementation of array.indexOf which sadly is not available in IE<=8
-         */
-        _indexOf: (function () {
-            // use native indexOf if provided
-            return [].indexOf
-                ? function (array, item) {
-                    return array.indexOf(item);
-                }
-            : function(array, item){
-                var i, len;
-                for( i = 0, len = array.length; i < len; i += 1 ){
-                    if( array[i] === item ){
-                        return i;
-                    }
-                }
-                return -1;
-            };
-        }()),
 
         /**
          * Watch for a certain value.
