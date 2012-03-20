@@ -16,7 +16,7 @@
      */
     var indexOf = (function () {
         // use native indexOf if provided
-        return [].indexOf
+        return Array.prototype.indexOf
             ? function (array, item) {
                 return array.indexOf(item);
             }
@@ -28,6 +28,24 @@
                     }
                 }
                 return -1;
+            };
+    }());
+
+    /**
+     * Implementation of array.forEach which is sadly not available in IE<=8
+     */
+    var forEach = (function () {
+        // use native forEach if available
+        return Array.prototype.forEach
+            ? function (array, callback) {
+                array.forEach(callback);
+            }
+            : function (array, callback) {
+                var i;
+                var len = array.length;
+                for (i = 0; i < len; i += 1) {
+                    callback(array[i]);
+                }
             };
     }());
 
@@ -154,7 +172,7 @@
          */
         _notify: function () {
             var value = this._value;
-            this._watchers.forEach(function (w) {
+            forEach(this._watchers, function (w) {
                 run(function () {
                     w(value);
                 });
@@ -166,7 +184,7 @@
          */
         _notifyTransitions: function (from, to) {
             var value = this._value;
-            this._transition_watchers.forEach(function (info) {
+            forEach(this._transition_watchers, function (info) {
                 var match_from = (info.from === '*' || info.from === from);
                 var match_to = (info.to === '*' || info.to === to);
 
