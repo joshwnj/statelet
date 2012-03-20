@@ -12,24 +12,29 @@
     }());
 
     /**
-     * Implementation of array.indexOf which sadly is not available in IE<=8
+     * Implementation of Array.indexOf which sadly is not available in IE<=8
      */
-    var indexOf = (function () {
-        // use native indexOf if provided
-        return [].indexOf
-            ? function (array, item) {
-                return array.indexOf(item);
+    var indexOf = Array.prototype.indexOf || function (item) {
+        var i;
+        var len = this.length;
+        for( i = 0; i < len; i += 1 ){
+            if( this[i] === item ){
+                return i;
             }
-            : function(array, item){
-                var i, len;
-                for( i = 0, len = array.length; i < len; i += 1 ){
-                    if( array[i] === item ){
-                        return i;
-                    }
-                }
-                return -1;
-            };
-    }());
+        }
+        return -1;
+    };
+
+    /**
+     * Implementation of Array.forEach which is sadly not available in IE<=8
+     */
+    var forEach = Array.prototype.forEach || function (callback) {
+        var i;
+        var len = this.length;
+        for (i = 0; i < len; i += 1) {
+            callback(this[i]);
+        }
+    };
 
     function State (value) {
         this._watchers = [];
@@ -75,7 +80,7 @@
             }
 
             // register the callback if it hasn't already been added
-            var i = indexOf(this._watchers, callback);
+            var i = indexOf.call(this._watchers, callback);
             if(i === -1){
                 this._watchers.push(callback);
             }
@@ -108,7 +113,7 @@
          * @returns {Boolean} if the callback was removed
          */
         unwatch: function (callback) {
-            var i = indexOf(this._watchers, callback);
+            var i = indexOf.call(this._watchers, callback);
             var found = (i !== -1);
             if (found) {
                 this._watchers.splice(i, 1);
@@ -154,7 +159,7 @@
          */
         _notify: function () {
             var value = this._value;
-            this._watchers.forEach(function (w) {
+            forEach.call(this._watchers, function (w) {
                 run(function () {
                     w(value);
                 });
@@ -166,7 +171,7 @@
          */
         _notifyTransitions: function (from, to) {
             var value = this._value;
-            this._transition_watchers.forEach(function (info) {
+            forEach.call(this._transition_watchers, function (info) {
                 var match_from = (info.from === '*' || info.from === from);
                 var match_to = (info.to === '*' || info.to === to);
 
