@@ -47,7 +47,7 @@ test('Watchers all fire asynchronously', function (t) {
     };
     // this will cause our watch() callback to be run,
     // as the state already has a value
-    s.watch(watcher2);  
+    s.watch(watcher2);
     s.set('4th');
     t.equal(watcher2_values.length, 0, 'Second watcher should still not have been called');
 
@@ -67,6 +67,7 @@ test('Ensure once only invokes watcher for single change', function (t) {
 
     var times = 0;
     var watcher = function (value) {
+        t.equal(value, '1st');
         times += 1;
     };
 
