@@ -99,7 +99,7 @@
             once_callback = function(){
                 var has_watcher = self.unwatch(once_callback);
                 if( has_watcher ){
-                    callback.call(null, arguments);
+                    callback.apply(null, arguments);
                 }
             };
 
