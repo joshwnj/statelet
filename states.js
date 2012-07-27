@@ -43,7 +43,7 @@
     }
 
     State.prototype = {
-        _wildcard_marker: '*',
+        ANY: '*',
         
         get: function () {
             return this._value;
@@ -173,11 +173,11 @@
          */
         _notifyTransitions: function (from, to) {
             var value = this._value;
-            var anything = this._wildcard_marker;
+            var ANY = this.ANY;
 
             forEach.call(this._transition_watchers, function (info) {
-                var match_from = (info.from === anything || info.from === from);
-                var match_to = (info.to === anything || info.to === to);
+                var match_from = (info.from === ANY || info.from === from);
+                var match_to = (info.to === ANY || info.to === to);
 
                 if (match_from && match_to) {
                     run(function () { info.callback(from, to); });
