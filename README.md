@@ -44,3 +44,14 @@ meal_is_ready.when(true, function () {
 
  * make sure examples have decent cross-browser support
  * more examples
+
+
+## Install
+
+```
+npm install statelet
+```
+
+## License
+
+MIT
