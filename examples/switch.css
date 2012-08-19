@@ -1,0 +1,56 @@
+body {
+    font-family: Helvetica, sans-serif;
+}
+
+#switch {
+    position: relative;
+    width: 200px;
+    height: 50px;
+    border-radius: 50px;
+    background: #666;
+    border: 3px solid black;
+    cursor: pointer;
+}
+
+#switch .label {
+    position: absolute;
+    display: block;
+    height: 100%;
+    color: #333;
+    font-size: 32px;
+    top: 0;
+    line-height: 50px;
+    text-transform: uppercase;
+    text-align: center;
+    background: #666;
+    border-radius: 50px;
+    width: 100px;
+}
+
+#switch .label.on {
+    left: 0px;
+}
+
+#switch .label.off {
+    right: 0px;
+}
+
+#switch .thumb {
+    position: absolute;
+    background: #FFF;
+    top: 0;
+    left: 0;
+    width: 100px;
+    height: 100%;
+    border-radius: 50px;
+    
+    -webkit-transition: left 0.1s;  
+}
+
+
+#switch.is_on .thumb {
+    left: 50%;
+}
+
+#switch .label { z-index: 100; }
+#switch .thumb { z-index: 200; }

@@ -1,12 +1,12 @@
 {
-  "name": "states",
-  "version": "0.2.0",
+  "name": "statelet",
+  "version": "0.3.0",
   "author": "Josh Johnston (@joshwnj)",
-  "description": "State objects",
+  "description": "Little state objects",
   "contributors": [
     "Weston Ruter (@westonruter)"
   ],
-  "repository": "git://github.com/joshwnj/States.git",
+  "repository": "git://github.com/joshwnj/statelet.git",
   "scripts": {
     "test": "node tests"
   }

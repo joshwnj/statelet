@@ -1,39 +1,46 @@
-# States
+# Statelet
 
-[![Build Status](https://secure.travis-ci.org/joshwnj/States.png)](http://travis-ci.org/joshwnj/States)
+[![Build Status](https://secure.travis-ci.org/joshwnj/statelet.png)](http://travis-ci.org/joshwnj/statelet)
 
 Instead of this:
 
 ```js
-if (SomeObject.is_ready) {
-    // ...
+if (is_ready) {
+   // do the thing
+}
+else {
+   // put into a queue and execute when is_ready=true
 }
 ```
 
 Do this:
 
 ```js
-SomeObject.is_ready.when(true, function () {
-    // ....
+is_ready.when(true, function () {
+  // do the thing
 });
 ```
 
-## Watching State
+## Logic Gates
 
 ```js
-var state = new State;
+var burger = new State();
+var fries = new State();
+var meal_is_ready = new State();
 
-// notify whenever the value changes
-state.watch(function (value) { ... });
-
-// notify when the value changes to something specific 
-state.when(value, function () { ... });
-
-// notify whenever a certain transition occurs
-state.onTransition(from, to, function () { ... });
-
-// wildcards work for transitions
-state.onTransition('*', to, function (from, to) { ... });
-state.onTransition(from, '*', function (from, to) { ... });
-state.onTransition('*', '*', function (from, to) { ... });
+function onMealChange () {
+    var burger_ready = burger.get() === 'flipped';
+    var fries_ready = fries.get() === 'fried';
+    meal_is_ready.set(burger_ready && fries_ready);
+}
+burger.watch(onMealChange);
+fries.watch(onMealChange);
+meal_is_ready.when(true, function () {
+    console.log('ding ding!');
+});
 ```
+
+## To do
+
+ * make sure examples have decent cross-browser support
+ * more examples
