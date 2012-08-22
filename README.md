@@ -2,18 +2,28 @@
 
 [![Build Status](https://secure.travis-ci.org/joshwnj/statelet.png)](http://travis-ci.org/joshwnj/statelet)
 
-Instead of this:
+Sometimes we have a pattern like:
 
 ```js
 if (is_ready) {
-   // do the thing
+  // do the thing
 }
 else {
-   // put into a queue and execute when is_ready=true
+  // put into a queue and execute when is_ready=true
 }
 ```
 
-Do this:
+Events make it better:
+
+```js
+emitter.on('ready', function () {
+  // do the thing
+});
+```
+
+But what if you start listening too late and you miss the event?  You'll be waiting forever...
+
+`statelet` takes a different approach where instead of listening for events we're watching for changes in state:
 
 ```js
 is_ready.when(true, function () {
@@ -21,36 +31,43 @@ is_ready.when(true, function () {
 });
 ```
 
-## Logic Gates
+## Combining States
+
+Sometimes you want to know when multiple states align in a certain way.
 
 ```js
-var burger = new State();
-var fries = new State();
-var meal_is_ready = new State();
+var State = require('statelet');
 
-function onMealChange () {
-    var burger_ready = burger.get() === 'flipped';
-    var fries_ready = fries.get() === 'fried';
-    meal_is_ready.set(burger_ready && fries_ready);
+var is_happy = new State();
+var knows_it = new State();
+var action = new State();
+
+function onChange () {
+  var youre_happy = is_happy.get();
+  var you_know_it = knows_it.get();
+  
+  if (youre_happy && you_know_it) {
+    action.set('clap your hands');
+  }
 }
-burger.watch(onMealChange);
-fries.watch(onMealChange);
-meal_is_ready.when(true, function () {
-    console.log('ding ding!');
-});
+is_happy.watch(onChange);
+knows_it.watch(onChange);
 ```
 
-## To do
+## Where can I use it?
 
- * make sure examples have decent cross-browser support
- * more examples
-
+Works in both node.js and browser.
 
 ## Install
 
 ```
 npm install statelet
 ```
+
+## To do
+
+ * make sure examples have decent cross-browser support
+ * more examples
 
 ## License
 
