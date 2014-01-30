@@ -5,6 +5,7 @@
   "description": "Little state objects",
   "contributors": [
     "Weston Ruter (@westonruter)"
+    "Kamil Ogórek (@kamilogorek)",
   ],
   "repository": "git://github.com/joshwnj/statelet.git",
   "scripts": {

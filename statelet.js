@@ -1,9 +1,17 @@
 /**
- * @version 0.3
- * @twitter joshwnj, westonruter
+ * @version 0.4
+ * @twitter joshwnj, westonruter, kamilogorek
  */
 
-(function () {
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        define([], factory);
+    } else if (typeof exports === 'object') {
+        module.exports = factory();
+    } else {
+        root.State = factory();
+    }
+}(this, function () {
     var undefined;
 
     var nextTick = (function () {
@@ -38,7 +46,7 @@
     };
 
     var EventEmitter;
-    if (typeof require === 'function') {
+    if (typeof exports === 'object') {
         EventEmitter = require('events').EventEmitter;
     }
     else {
@@ -143,13 +151,5 @@
         }
     };
 
-    // ----
-    // export
-
-    if (typeof module !== 'undefined' && module.exports) {
-        module.exports = State;
-    }
-    else {
-        window.State = State;
-    }
-}());
+    return State;
+}));

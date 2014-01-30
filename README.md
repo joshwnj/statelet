@@ -45,7 +45,7 @@ var action = new State();
 function onChange () {
   var youre_happy = is_happy.get();
   var you_know_it = knows_it.get();
-  
+
   if (youre_happy && you_know_it) {
     action.set('clap your hands');
   }
@@ -57,6 +57,7 @@ knows_it.watch(onChange);
 ## Where can I use it?
 
 Works in both node.js and browser.
+You can use it as either AMD or CommonJS style module.
 
 ## Install
 
