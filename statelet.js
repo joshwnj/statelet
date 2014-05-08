@@ -56,7 +56,7 @@
         };
         EventEmitter.prototype = {
             emit: function (_, data) {
-                this._listeners.forEach(function (f) {
+                forEach.call(this._listeners, function (f) {
                     nextTick(function () {
                         f(data);
                     });
