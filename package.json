@@ -8,6 +8,9 @@
     "Weston Ruter (@westonruter)"
   ],
   "repository": "git://github.com/joshwnj/statelet.git",
+  "engines": {
+    "node": ">=0.6"
+  },
   "scripts": {
     "test": "node tests"
   }
